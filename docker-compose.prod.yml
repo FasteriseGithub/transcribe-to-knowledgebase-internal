@@ -11,7 +11,7 @@ services:
       - 5000
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.fastapi.rule=Host(`sub.domain.com`)"
+      - "traefik.http.routers.fastapi.rule=Host(`api-internal.fasterise.com`)"
       - "traefik.http.routers.fastapi.tls=true"
       - "traefik.http.routers.fastapi.tls.certresolver=letsencrypt"
 
