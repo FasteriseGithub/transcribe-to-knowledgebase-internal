@@ -8,7 +8,7 @@ from openai import AsyncOpenAI
 
 import logging
 
-from chains import transcript_remove_unnecessary_information
+import chains
 
 API_KEY = "your_actual_api_key"
 API_KEY_NAME = "access_token"
@@ -58,7 +58,11 @@ async def upload_file(file: UploadFile = File(...), api_key: APIKey = Depends(ge
         await file.close()
         os.remove(temp_file_path)    
 
-    corrected_chunks = await transcript_remove_unnecessary_information(transcript)
+    corrected_chunks = await chains.transcript_remove_unnecessary_information(transcript)
+
+    joined_chunks = "\n".join(corrected_chunks)
+
+    analysis = await chains.critical_conversation_analysis(joined_chunks)
 
     return {"corrected_chunks": corrected_chunks}
     
