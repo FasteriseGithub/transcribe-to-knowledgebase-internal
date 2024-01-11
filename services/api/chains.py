@@ -52,7 +52,7 @@ async def clean_part_of_chunk(chunk: str) -> str:
 
 async def critical_conversation_analysis(joined_chunks: str):
     prompt = ChatPromptTemplate.from_template("You are a part of a transcript to knowledge base system for an AI automation development agency. You will create a critical analysis of the following conversation in bullet point format: \n\n {conversation} \n\n Summarize each section in a succint bullet point with sub points for the following sections: Decisions, Insights, Questions, Tasks. Conclude by creating a quick summary with the critical insights of the day's conversation. Output should be Markdown")
-    model = ChatOpenAI(model="gpt-4-1106", temperature=0)
+    model = ChatOpenAI(model="gpt-4-1106-preview", temperature=0)
     output_parser = StrOutputParser()
 
     chain = prompt | model | output_parser

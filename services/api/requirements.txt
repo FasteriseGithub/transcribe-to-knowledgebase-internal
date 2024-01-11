@@ -6,3 +6,4 @@ langchainhub==0.1.14
 openai==1.6.1
 langchain-openai==0.0.2
 python-multipart==0.0.6
+aiohttp==3.9.1
