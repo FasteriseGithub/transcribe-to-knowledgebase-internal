@@ -5,7 +5,7 @@ from langchain_openai import ChatOpenAI
 
 import helpers
 
-async def transcript_remove_unnecessary_information(vtt_transcription: str):
+async def transcript_remove_unnecessary_information(vtt_transcription: str) -> list[str]:
     text_splitter = CharacterTextSplitter.from_tiktoken_encoder(
         chunk_size=987, chunk_overlap=0
     )
@@ -34,6 +34,10 @@ async def transcript_remove_unnecessary_information(vtt_transcription: str):
             corrected_chunks.append(await clean_part_of_chunk(chunk))
         elif cleaned == "UNKNOWN":
             print(f"FATAL ERROR on chunk: {chunk} with output: {res}")
+
+    print(corrected_chunks)
+    print(chunks_banter_for_testing)
+    return corrected_chunks
         
 async def clean_part_of_chunk(chunk: str) -> str:
     prompt = ChatPromptTemplate.from_template("You are a part of a transcript to knowledge base system for an AI automation development agency. You will help clean up the transcripts of meetings \n\n The following is a chunk of a transcript where a previous part of the system has detected a greeting, a personal catchup, or banter: \n\n {chunk} \n\n remove the lines that have a greeting, a personal catchup or banter. Keep the rest of the chunk in its original form")

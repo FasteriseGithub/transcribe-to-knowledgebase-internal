@@ -8,6 +8,8 @@ from openai import AsyncOpenAI
 
 import logging
 
+from chains import transcript_remove_unnecessary_information
+
 API_KEY = "your_actual_api_key"
 API_KEY_NAME = "access_token"
 API_KEY_HEADER = APIKeyHeader(name=API_KEY_NAME, auto_error=True)
@@ -56,7 +58,9 @@ async def upload_file(file: UploadFile = File(...), api_key: APIKey = Depends(ge
         await file.close()
         os.remove(temp_file_path)    
 
-    return {"transcription": transcript}
+    corrected_chunks = await transcript_remove_unnecessary_information(transcript)
+
+    return {"corrected_chunks": corrected_chunks}
     
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
