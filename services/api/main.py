@@ -9,10 +9,12 @@ from openai import AsyncOpenAI
 import logging
 
 import chains
+import discord
 
 API_KEY = "your_actual_api_key"
 API_KEY_NAME = "access_token"
 API_KEY_HEADER = APIKeyHeader(name=API_KEY_NAME, auto_error=True)
+DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")
 
 SUPPORTED_AUDIO_TYPES = [
     "audio/flac", "audio/m4a", "audio/mp3", "video/mp4", "audio/mpeg", 
