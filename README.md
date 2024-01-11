@@ -1,8 +1,9 @@
 #### To upload a file:
 ```
 curl -X 'POST' \
-  'http://127.0.0.1:8000/upload/' \
+  'http://0.0.0.0:81/ping' \
   -H 'accept: application/json' \
   -H 'access_token: your_actual_api_key' \
+  -H 'Host: fastapi.localhost' \
   -F 'file=@path_to_your_file'
   ```
