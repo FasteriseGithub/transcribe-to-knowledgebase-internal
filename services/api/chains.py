@@ -7,7 +7,7 @@ import helpers
 
 async def transcript_remove_unnecessary_information(vtt_transcription: str) -> list[str]:
     text_splitter = CharacterTextSplitter.from_tiktoken_encoder(
-        chunk_size=987, chunk_overlap=0
+        chunk_size=377, chunk_overlap=0
     )
     
     chunks = text_splitter.split_text(vtt_transcription)
