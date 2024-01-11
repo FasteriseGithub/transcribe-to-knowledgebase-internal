@@ -4,7 +4,9 @@ from fastapi.security.api_key import APIKeyHeader
 from fastapi.openapi.models import APIKey
 import shutil
 import os
+
 from openai import AsyncOpenAI
+from langchain.text_splitter import CharacterTextSplitter
 
 import logging
 
@@ -66,9 +68,20 @@ async def upload_file(file: UploadFile = File(...), api_key: APIKey = Depends(ge
 
     analysis = await chains.critical_conversation_analysis(joined_chunks)
 
-    await discord.post_to_discord_webhook_async(DISCORD_WEBHOOK_URL, analysis)
+    text_splitter = CharacterTextSplitter.from_tiktoken_encoder(
+        chunk_size=987, chunk_overlap=0
+    )
+    
+    chunks = text_splitter.split_text(analysis)
+    
+    for chunk in chunks:
+        await discord.post_to_discord_webhook_async(DISCORD_WEBHOOK_URL, chunk)
 
     return {"corrected_chunks": analysis}
     
+@app.get("/test-hook")
+async def test_hook():
+    await discord.post_to_discord_webhook_async(DISCORD_WEBHOOK_URL, "test")
+
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

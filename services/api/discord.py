@@ -8,6 +8,8 @@ async def post_to_discord_webhook_async(webhook_url, message):
     }
     headers = {"Content-Type": "application/json"}
 
+    print("Sending to discord")
+
     try:
         async with aiohttp.ClientSession() as session:
             async with session.post(webhook_url, data=json.dumps(data), headers=headers) as response:
