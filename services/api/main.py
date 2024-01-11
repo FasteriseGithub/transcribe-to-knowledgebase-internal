@@ -69,7 +69,7 @@ async def upload_file(file: UploadFile = File(...), api_key: APIKey = Depends(ge
     analysis = await chains.critical_conversation_analysis(joined_chunks)
 
     text_splitter = CharacterTextSplitter.from_tiktoken_encoder(
-        chunk_size=987, chunk_overlap=0
+        chunk_size=233, chunk_overlap=0
     )
     
     chunks = text_splitter.split_text(analysis)
