@@ -38,7 +38,7 @@ async def get_api_key(api_key_header: str = Security(API_KEY_HEADER)):
     else:
         raise HTTPException(status_code=403, detail="Could not validate credentials")
 
-@app.post("/upload")
+@app.post("/replace-with-your-uuid")
 async def upload_file(file: UploadFile = File(...), api_key: APIKey = Depends(get_api_key)):
     print(f"Detected MIME type: {file.content_type}")
 
