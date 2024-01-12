@@ -40,10 +40,14 @@ environment variables
       - PINECONE_API_KEY=your-pinecone-api-key
       - PINECONE_ENV=your-pinecone-environment-name
 ```
-note the API_KEY_INTERNAL is one of the uuids you generated
+note: The API_KEY_INTERNAL is one of the uuids you generated.
+
+
 8. Make sure you are in the root directory, the one that has the
    `docker-compose.prod.yml` file and run the following command.
     `docker-compose -f docker-compose.prod.yml up --build`
+
+
 9. Do a smoke test with `curl https://sub.domain.com/ping` from another
    machine. Use postman if you don't have curl installed. It should
    return `pong`
