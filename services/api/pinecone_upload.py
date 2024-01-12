@@ -2,6 +2,7 @@ import pinecone
 import os
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import Pinecone
+from langchain.text_splitter import CharacterTextSplitter
 from types_internal import MetaData
 
 INDEX_NAME = "transcription-api"
@@ -23,6 +24,12 @@ async def embed_timed_transcript(transcript_chunked: list[str], metadata: MetaDa
 
 async def embed_summary(summary: str, metadata: MetaData):
     vectorstore = await create_index_if_not_exists(NAMESPACE_INTERNAL)
+    meta_dict = metadata.model_dump()
+
+    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+    texts = text_splitter.split_text(summary)
+
+    await vectorstore.aadd_texts(texts, meta_dict)
 
 async def create_index_if_not_exists(namespace: str) -> Pinecone:
     if INDEX_NAME not in pinecone.list_indexes():
