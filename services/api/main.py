@@ -13,7 +13,7 @@ import logging
 import chains
 import discord
 
-API_KEY = "your_actual_api_key"
+API_KEY_INTERNAL = os.getenv("API_KEY_INTERNAL")
 API_KEY_NAME = "access_token"
 API_KEY_HEADER = APIKeyHeader(name=API_KEY_NAME, auto_error=True)
 DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")
@@ -33,7 +33,7 @@ async def ping():
     return "pong"
 
 async def get_api_key(api_key_header: str = Security(API_KEY_HEADER)):
-    if api_key_header == API_KEY:
+    if api_key_header == API_KEY_INTERNAL:
         return api_key_header
     else:
         raise HTTPException(status_code=403, detail="Could not validate credentials")

@@ -8,6 +8,9 @@ services:
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
+      - API_KEY_INTERNAL=${API_KEY_INTERNAL}
+      - PINECONE_API_KEY=${PINECONE_API_KEY}
+      - PINECONE_ENV=${PINECONE_ENV}
     expose:
       - 5000
     labels:
