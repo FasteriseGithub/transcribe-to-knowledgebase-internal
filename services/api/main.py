@@ -1,3 +1,4 @@
+from datetime import date
 import uvicorn
 from fastapi import FastAPI, File, UploadFile, HTTPException, Security, Depends
 from fastapi.security.api_key import APIKeyHeader
@@ -12,6 +13,8 @@ import logging
 
 import chains
 import discord
+from pinecone_upload import embed_summary, embed_timed_transcript
+from types_internal import MeetingTypeEnum, MetaData
 
 API_KEY_INTERNAL = os.getenv("API_KEY_INTERNAL")
 API_KEY_NAME = "access_token"
@@ -39,7 +42,7 @@ async def get_api_key(api_key_header: str = Security(API_KEY_HEADER)):
         raise HTTPException(status_code=403, detail="Could not validate credentials")
 
 @app.post("/replace-with-your-uuid")
-async def upload_file(file: UploadFile = File(...), api_key: APIKey = Depends(get_api_key)):
+async def upload_file(file: UploadFile = File(...), api_key: APIKey = Depends(get_api_key), meeting_type: MeetingTypeEnum, meeting_date: date):
     print(f"Detected MIME type: {file.content_type}")
 
     if file.content_type not in SUPPORTED_AUDIO_TYPES:
@@ -76,6 +79,17 @@ async def upload_file(file: UploadFile = File(...), api_key: APIKey = Depends(ge
     
     for chunk in chunks:
         await discord.post_to_discord_webhook_async(DISCORD_WEBHOOK_URL, chunk)
+
+    metadata = {
+            "date": meeting_date,
+            "meeting_type": meeting_type,
+            "summary": True
+    }
+
+    metadata = MetaData(**metadata)
+    await embed_summary(analysis, metadata )
+    metadata.summary = False
+    await embed_timed_transcript(corrected_chunks, metadata)
 
     return {"corrected_chunks": analysis}
     
