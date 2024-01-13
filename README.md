@@ -56,7 +56,11 @@ All good you are all done, you can now make requests to the api using
 the uuids you generated. Example below:
 
 ```
-Todo
+curl -X POST "https://api-internal.fasterise.com/replace-with-your-uuid?meeting_type=General&meeting_date=2024-01-01" \
+     -H "access_token: replace-with-api-key-you-generated-and-put-in-environment" \
+     -H "Content-Type: multipart/form-data" \
+     -F "file=@/home/user/Downloads/the_audio_file_you_want_to_post_to_the_kb.m4a;type=audio/mpeg"
+
 ```
 
 Todo: create a set-up script to help you with this process. Any

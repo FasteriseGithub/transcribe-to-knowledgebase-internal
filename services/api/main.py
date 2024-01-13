@@ -76,7 +76,7 @@ async def upload_file(meeting_type: MeetingTypeEnum, meeting_date: date,file: Up
     )
     
     chunks = text_splitter.split_text(analysis)
-    
+    await discord.post_to_discord_webhook_async(DISCORD_WEBHOOK_URL, f"## {meeting_type} Meeting \n {meeting_date}")
     for chunk in chunks:
         await discord.post_to_discord_webhook_async(DISCORD_WEBHOOK_URL, chunk)
 
@@ -91,7 +91,7 @@ async def upload_file(meeting_type: MeetingTypeEnum, meeting_date: date,file: Up
     metadata.summary = False
     await embed_timed_transcript(corrected_chunks, metadata)
 
-    return {"corrected_chunks": analysis}
+    return {"response": "OK"}
     
 @app.get("/test-hook")
 async def test_hook():

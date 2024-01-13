@@ -35,8 +35,6 @@ async def transcript_remove_unnecessary_information(vtt_transcription: str) -> l
         elif cleaned == "UNKNOWN":
             print(f"FATAL ERROR on chunk: {chunk} with output: {res}")
 
-    print(corrected_chunks)
-    print(f"BANTER: {chunks_banter_for_testing}")
     return corrected_chunks
         
 async def clean_part_of_chunk(chunk: str) -> str:
