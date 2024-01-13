@@ -42,7 +42,7 @@ async def get_api_key(api_key_header: str = Security(API_KEY_HEADER)):
         raise HTTPException(status_code=403, detail="Could not validate credentials")
 
 @app.post("/replace-with-your-uuid")
-async def upload_file(file: UploadFile = File(...), api_key: APIKey = Depends(get_api_key), meeting_type: MeetingTypeEnum, meeting_date: date):
+async def upload_file(meeting_type: MeetingTypeEnum, meeting_date: date,file: UploadFile = File(...), api_key: APIKey = Depends(get_api_key)):
     print(f"Detected MIME type: {file.content_type}")
 
     if file.content_type not in SUPPORTED_AUDIO_TYPES:
