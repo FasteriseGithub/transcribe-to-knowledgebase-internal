@@ -20,7 +20,9 @@ async def embed_timed_transcript(transcript_chunked: list[str], metadata: MetaDa
     vectorstore = await create_index_if_not_exists(NAMESPACE_INTERNAL)
     meta_dict = metadata.model_dump()
 
-    await vectorstore.aadd_texts(transcript_chunked, meta_dict)
+    metadatas = [meta_dict for _ in transcript_chunked]
+
+    await vectorstore.aadd_texts(transcript_chunked, metadatas)
 
 async def embed_summary(summary: str, metadata: MetaData):
     vectorstore = await create_index_if_not_exists(NAMESPACE_INTERNAL)
@@ -29,7 +31,9 @@ async def embed_summary(summary: str, metadata: MetaData):
     text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
     texts = text_splitter.split_text(summary)
 
-    await vectorstore.aadd_texts(texts, meta_dict)
+    metadatas = [meta_dict for _ in texts]
+
+    await vectorstore.aadd_texts(texts, metadatas)
 
 async def create_index_if_not_exists(namespace: str) -> Pinecone:
     if INDEX_NAME not in pinecone.list_indexes():
