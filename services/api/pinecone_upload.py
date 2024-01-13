@@ -21,6 +21,11 @@ async def embed_timed_transcript(transcript_chunked: list[str], metadata: MetaDa
     meta_dict = metadata.model_dump()
 
     metadatas = [meta_dict for _ in transcript_chunked]
+   # Debugging: Check types in metadatas
+    for i, md in enumerate(metadatas):
+        if not isinstance(md, dict):
+            print(f"transript Metadata at index {i} is not a dictionary: {md}")
+            raise TypeError(f"Metadata at index {i} is not a dictionary.")
 
     await vectorstore.aadd_texts(transcript_chunked, metadatas)
 
@@ -32,6 +37,11 @@ async def embed_summary(summary: str, metadata: MetaData):
     texts = text_splitter.split_text(summary)
 
     metadatas = [meta_dict for _ in texts]
+   # Debugging: Check types in metadatas
+    for i, md in enumerate(metadatas):
+        if not isinstance(md, dict):
+            print(f"summary Metadata at index {i} is not a dictionary: {md}")
+            raise TypeError(f"Metadata at index {i} is not a dictionary.")
 
     await vectorstore.aadd_texts(texts, metadatas)
 
