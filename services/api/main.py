@@ -83,9 +83,5 @@ async def upload_file(meeting_type: MeetingTypeEnum, meeting_date: date,file: Up
 
     return {"response": "OK"}
     
-@app.get("/test-hook")
-async def test_hook():
-    await discord.post_to_discord_webhook_async(DISCORD_WEBHOOK_URL, "test")
-
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -3,6 +3,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
+
 import helpers
 
 async def transcript_remove_unnecessary_information(vtt_transcription: str) -> list[str]:
@@ -58,3 +59,5 @@ async def critical_conversation_analysis(joined_chunks: str) -> str:
     res = await chain.ainvoke({"conversation": joined_chunks})
 
     return res
+
+
