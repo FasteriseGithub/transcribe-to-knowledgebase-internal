@@ -21,11 +21,6 @@ API_KEY_NAME = "access_token"
 API_KEY_HEADER = APIKeyHeader(name=API_KEY_NAME, auto_error=True)
 DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")
 
-SUPPORTED_AUDIO_TYPES = [
-    "audio/flac", "audio/m4a", "audio/mp3", "video/mp4", "audio/mpeg", 
-    "audio/mpga", "audio/oga", "audio/ogg", "audio/wav", "audio/webm"
-]
-
 logging.basicConfig(filename='/home/app/logs/print.log', level=logging.INFO, format='%(asctime)s - %(message)s')
 
 app = FastAPI()
@@ -43,11 +38,6 @@ async def get_api_key(api_key_header: str = Security(API_KEY_HEADER)):
 
 @app.post("/replace-with-your-uuid")
 async def upload_file(meeting_type: MeetingTypeEnum, meeting_date: date,file: UploadFile = File(...), api_key: APIKey = Depends(get_api_key)):
-    print(f"Detected MIME type: {file.content_type}")
-
-    if file.content_type not in SUPPORTED_AUDIO_TYPES:
-        raise HTTPException(status_code=400, detail="Unsupported file type")
-
     temp_file_path = f"temp_{file.filename}"
 
     with open(temp_file_path, 'wb') as temp_file:
