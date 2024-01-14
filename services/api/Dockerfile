@@ -8,6 +8,10 @@ ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 
 WORKDIR $WORKDIR
 
+RUN apt-get update \
+    && apt-get install -y ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN pip install --upgrade pip
 COPY ./requirements.txt $WORKDIR/requirements.txt
 RUN pip install -r requirements.txt
