@@ -8,6 +8,7 @@ import os
 
 from openai import AsyncOpenAI
 from langchain.text_splitter import CharacterTextSplitter
+from pydub import AudioSegment
 
 import logging
 
@@ -43,17 +44,32 @@ async def upload_file(meeting_type: MeetingTypeEnum, meeting_date: date,file: Up
     with open(temp_file_path, 'wb') as temp_file:
         shutil.copyfileobj(file.file, temp_file)
 
+    audio = AudioSegment.from_file(temp_file_path)
+    chunk_size = 10 * 60 * 1000  # 10 minutes in milliseconds
+    chunks = [audio[i:i + chunk_size] for i in range(0, len(audio), chunk_size)]
+
+    transcriptions = []
+
     try:
-        transcript = await client.audio.transcriptions.create(
-            model="whisper-1", 
-            file=open(temp_file_path, 'rb'),
-            response_format="vtt"
-        )
+        for i, chunk in enumerate(chunks):
+            chunk_file_path = f"chunk_{i}_{temp_file_path}"
+            chunk.export(chunk_file_path, format="mp3")
+            with open(chunk_file_path, 'rb') as chunk_file:
+                transcript = await client.audio.transcriptions.create(
+                    model="whisper-1", 
+                    file=chunk_file,
+                    response_format="vtt",
+                    prompt="Fasterise, Alejo, Nan"
+                )
+                transcriptions.append(transcript)
+            os.remove(chunk_file_path)       
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         await file.close()
-        os.remove(temp_file_path)    
+        os.remove(temp_file_path)
+    
+    transcript = '/n'.join(transcriptions)
 
     corrected_chunks = await chains.transcript_remove_unnecessary_information(transcript)
 
@@ -83,5 +99,9 @@ async def upload_file(meeting_type: MeetingTypeEnum, meeting_date: date,file: Up
 
     return {"response": "OK"}
     
+@app.get("/chat-hook")
+async def chat(api_key: APIKey = Depends(get_api_key)):
+    pass
+
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -8,3 +8,4 @@ langchain-openai==0.0.2
 python-multipart==0.0.6
 aiohttp==3.9.1
 pinecone-client==2.2.4
+pydub==0.25.1
