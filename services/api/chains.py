@@ -59,5 +59,3 @@ async def critical_conversation_analysis(joined_chunks: str) -> str:
     res = await chain.ainvoke({"conversation": joined_chunks})
 
     return res
-
-

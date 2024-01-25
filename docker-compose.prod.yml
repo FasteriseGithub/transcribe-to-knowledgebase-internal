@@ -11,6 +11,7 @@ services:
       - API_KEY_INTERNAL=${API_KEY_INTERNAL}
       - PINECONE_API_KEY=${PINECONE_API_KEY}
       - PINECONE_ENV=${PINECONE_ENV}
+    restart: on-failure
     expose:
       - 5000
     labels:

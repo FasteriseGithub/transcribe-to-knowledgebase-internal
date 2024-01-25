@@ -39,38 +39,8 @@ async def get_api_key(api_key_header: str = Security(API_KEY_HEADER)):
 
 @app.post("/replace-with-your-uuid")
 async def upload_file(meeting_type: MeetingTypeEnum, meeting_date: date,file: UploadFile = File(...), api_key: APIKey = Depends(get_api_key)):
-    temp_file_path = f"temp_{file.filename}"
-
-    with open(temp_file_path, 'wb') as temp_file:
-        shutil.copyfileobj(file.file, temp_file)
-
-    audio = AudioSegment.from_file(temp_file_path)
-    chunk_size = 10 * 60 * 1000  # 10 minutes in milliseconds
-    chunks = [audio[i:i + chunk_size] for i in range(0, len(audio), chunk_size)]
-
-    transcriptions = []
-
-    try:
-        for i, chunk in enumerate(chunks):
-            chunk_file_path = f"chunk_{i}_{temp_file_path}"
-            chunk.export(chunk_file_path, format="mp3")
-            with open(chunk_file_path, 'rb') as chunk_file:
-                transcript = await client.audio.transcriptions.create(
-                    model="whisper-1", 
-                    file=chunk_file,
-                    response_format="vtt",
-                    prompt="Fasterise, Alejo, Nan"
-                )
-                transcriptions.append(transcript)
-            os.remove(chunk_file_path)       
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    finally:
-        await file.close()
-        os.remove(temp_file_path)
+    transcript = audio_to_transcript(file) 
     
-    transcript = '/n'.join(transcriptions)
-
     corrected_chunks = await chains.transcript_remove_unnecessary_information(transcript)
 
     joined_chunks = "\n".join(corrected_chunks)
@@ -105,3 +75,39 @@ async def chat(api_key: APIKey = Depends(get_api_key)):
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+async def audio_to_transcript(file: File) -> str:
+    temp_file_path = f"temp_{file.filename}"
+
+    with open(temp_file_path, 'wb') as temp_file:
+        shutil.copyfileobj(file.file, temp_file)
+
+    audio = AudioSegment.from_file(temp_file_path)
+    chunk_size = 10 * 60 * 1000  # 10 minutes in milliseconds
+    chunks = [audio[i:i + chunk_size] for i in range(0, len(audio), chunk_size)]
+
+    transcriptions = []
+
+    try:
+        for i, chunk in enumerate(chunks):
+            chunk_file_path = f"chunk_{i}_{temp_file_path}"
+            chunk.export(chunk_file_path, format="mp3")
+            with open(chunk_file_path, 'rb') as chunk_file:
+                transcript = await client.audio.transcriptions.create(
+                    model="whisper-1", 
+                    file=chunk_file,
+                    response_format="vtt",
+                    prompt="Fasterise, Alejo, Nan"
+                )
+                transcriptions.append(transcript)
+            os.remove(chunk_file_path)       
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        await file.close()
+        os.remove(temp_file_path)
+    
+    transcript = '/n'.join(transcriptions)
+
+    return transcript
+
