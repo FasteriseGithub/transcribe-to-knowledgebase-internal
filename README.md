@@ -64,7 +64,8 @@ curl -X POST "https://api-internal.fasterise.com/replace-with-your-uuid?meeting_
 ```
 
 Todo: create a set-up script to help you with this process. Any
-volunteers?
+volunteers? 
 
+![Screenshot 2024-02-20 at 16 30 55](https://github.com/FasteriseGithub/transcribe-to-knowledgebase-internal/assets/104698695/84215873-99bb-4c67-95e9-f1101b6c5ef8)
 
 
